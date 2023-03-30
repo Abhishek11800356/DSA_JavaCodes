@@ -1,0 +1,22 @@
+import java.io.*;
+import java.util.*;
+public class Main {
+	static int mul=0;
+  public static void multiplyRecursively(int n, int m) {
+	  if(n==0)
+	{
+		System.out.println(mul);
+		return;
+	}
+	  mul += m;
+	 multiplyRecursively(n-1,m);
+	  return; 
+  }
+
+  public static void main(String[] args) {
+    Scanner scn = new Scanner(System.in);
+    int n = scn.nextInt();
+    int m = scn.nextInt();
+    multiplyRecursively(n, m);
+  }
+}
