@@ -1,0 +1,98 @@
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    String s = sc.next();
+    sc.close();
+    System.out.println(reverseParentheses(s));
+  }
+
+	// in this reverse krne ke liye ek string lenge reverse krne ke liye and reverse ho jaane ke baad waps store
+	//  tb hi krenge jb i + 1 end of string na ho agar hai to back store ni krenge aur check krenge
+	// stack mein kuch bacha hai kya if haa then usko string mein concat kr ke send kr denge
+  public static String reverseParentheses(String s) {
+
+	  int n = s.length();
+	  if(s==null)
+		  return " ";
+	  Stack<Character> st = new Stack<>();
+	  String rev = "";
+	      for(int i=0;i<n;i++)
+			  {
+				  char ch = s.charAt(i);
+				  if(ch != ')')
+				  {
+					  st.push(ch);
+				  }
+
+				  if(ch == ')')
+				  {
+					  if(st.isEmpty())
+						  return " ";
+                       
+					   while(st.peek()!='(')
+						   {
+							   rev += st.pop();
+						   }
+					   st.pop();
+					   if(i+1 != n)
+					   {
+					  for(int j=0;j<rev.length();j++)
+						  {
+							  st.push(rev.charAt(j));
+						  }
+						   rev ="";
+					   }
+				  }
+			  }
+	  
+	  if(st.size()>0)
+	  {
+		  while(st.size()>0)
+			  { 
+				  rev = st.pop() + rev;  
+			  }
+		  return rev;
+	  }
+	  return rev;
+	  	  
+		  }
+}
+
+
+/*  // 2 nd approach where we store the reverse word back to the stack
+    //and at the end we empty the stack and return the result;
+public static String reverseParentheses(String s) {
+// your code here
+
+int n = s.length();
+Stack<Character> st = new Stack<>();
+String rev = "";
+for(int i=0;i<n;i++)
+{
+char ch = s.charAt(i);
+if(ch != ')')
+{
+st.push(ch);
+}
+if(ch == ')')
+{
+if(st.isEmpty())
+return " ";
+ArrayList<Character> st2=new ArrayList<>();
+while(st.peek()!='(')
+{
+st2.add(st.pop());
+}
+st.pop();
+for(char el:st2)st.push(el);
+}
+}
+while(!st.isEmpty())rev=st.pop()+rev;
+return rev;
+
+}
+}
+*/
