@@ -1,0 +1,46 @@
+import java.util.*;
+class Main
+{
+	public static void main(String args[])
+	{
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		int p[] = new int[n];
+		int d[] = new int[n];
+		for(int i=0;i<n;i++)p[i]=sc.nextInt();
+		for(int i=0;i<n;i++)d[i]=sc.nextInt();
+		System.out.println(new Solution().tour(p,d));
+	}
+}
+class Solution
+{
+	int tour(int petrol[], int distance[])
+	{
+		int pl = petrol.length;
+		
+		int psum = 0;
+		int dsum = 0;
+			for(int i = 0;i<pl;i++)
+			{
+				psum += petrol[i];
+				dsum += distance[i];
+			}
+		  if(psum<dsum)
+			return -1;
+		
+		int totalP =0;
+		int str =0;	
+		
+		for(int i = 0;i<pl;i++)
+			{			
+				totalP += petrol[i] - distance[i];
+				if(totalP<0)
+				{
+					totalP=0;
+				   str = i+1;
+				}
+			}
+		return str;
+		
+	}
+}
