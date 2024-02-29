@@ -1,0 +1,97 @@
+class Solution
+{
+	ArrayList <Integer> boundary(Node node)
+	{
+	    ArrayList<Integer> boundry = new ArrayList<>();
+	    if(node==null)
+	    {
+	        return boundry;
+	    }
+	    // adding root directly to the answer and then calling the left subtree and the right subtree to give left boundary and right boundary.
+	    boundry.add(node.data);
+
+       // Left boundary means go towards the left possible nodes first if node doesnot have left then move towards the right.
+       leftBoundary(node.left,boundry);
+	    
+      //If there is only a single node present 
+	    if(node.left!=null||node.right!=null)
+	    {
+	    leafNodes(node,boundry);
+	    }
+
+      // Rightt boundary means go towards the right possible nodes first if node doesnot have left then move towards the left.
+      // but we need to add right boundary in reverse fashion so after the calls we will add it to the Arraylist.
+      rightBoundary(node.right,boundry);
+	    
+	    return boundry;
+	}
+	
+	public void leftBoundary(Node node,ArrayList<Integer> boundry)
+	{
+	    if(node==null)
+	    return;
+	    
+	    if(node.left==null&&node.right==null)
+	    {
+	        
+	    }
+	    else
+	    {
+	        boundry.add(node.data);
+	    }
+	    
+	    if(node.left!=null)
+	    {
+	        leftBoundary(node.left,boundry);
+	    }
+	    else
+	    {
+	        leftBoundary(node.right,boundry);
+	    }
+	    
+	}
+	
+	public void leafNodes(Node node,ArrayList<Integer> boundry)
+	{
+	    if(node==null)
+	    {
+	        return ;
+	    }
+	    
+	   if(node.left==null&&node.right==null)
+	   {
+	       boundry.add(node.data);
+	   }
+	   
+	   leafNodes(node.left,boundry);
+	   leafNodes(node.right,boundry);
+	   
+	}
+	
+	public void rightBoundary(Node node,ArrayList<Integer> boundry)
+	{
+	    if(node==null)
+	    {
+	        return ;
+	    }
+	    
+	    if(node.right!=null)
+	    {
+	        rightBoundary(node.right,boundry);
+	    }
+	    else
+	    {
+	        rightBoundary(node.left,boundry);
+	    }
+	    
+	    if(node.left==null && node.right==null)
+	    {
+	       
+	    }
+	    else
+	    {
+	        boundry.add(node.data);
+	    }
+	    
+	}
+}
