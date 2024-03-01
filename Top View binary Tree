@@ -1,0 +1,260 @@
+import java.util.LinkedList; 
+import java.util.Queue; 
+import java.io.*;
+import java.util.*;
+
+class Node{
+    int data;
+    Node left;
+    Node right;
+    Node(int data){
+        this.data = data;
+        left=null;
+        right=null;
+    }
+}
+
+
+class Main {
+    static Node buildTree(String str){
+        if(str.length()==0 || str.charAt(0)=='N'){
+            return null;
+        }
+        String ip[] = str.split(" ");
+        Node root = new Node(Integer.parseInt(ip[0]));
+        Queue<Node> queue = new LinkedList<>(); 
+        queue.add(root);
+        int i = 1;
+        while(queue.size()>0 && i < ip.length) {
+            Node currNode = queue.peek();
+            queue.remove();
+            String currVal = ip[i];
+            if(!currVal.equals("N")) {
+                currNode.left = new Node(Integer.parseInt(currVal));
+                queue.add(currNode.left);
+            }
+            i++;
+            if(i >= ip.length)
+                break;   
+            currVal = ip[i];
+            if(!currVal.equals("N")) {
+                currNode.right = new Node(Integer.parseInt(currVal));
+                queue.add(currNode.right);
+            }
+            i++;
+        }
+        return root;
+    }
+    void inOrder(Node node) {
+        if (node == null) {
+            return;
+        }
+        inOrder(node.left);
+        System.out.print(node.data + " ");
+        inOrder(node.right);
+    }
+    
+	public static void main (String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int t=Integer.parseInt(br.readLine());
+		while(t-- > 0){
+			String s = br.readLine();
+			Node root = buildTree(s);
+			Solution tree = new Solution();
+			ArrayList<Integer> arr = tree.topView(root);
+			for(int x : arr)
+			System.out.print(x +" ");
+			System.out.println();  
+		}
+	}
+}
+  
+
+class qObj
+{
+    Node node;
+    int level;
+    qObj(Node n,int l)
+    {
+        node=n;
+        level=l;
+    }
+}
+
+class Solution
+{
+   static  int leftMostPos =0;
+   static int rightMostPos=0;
+    
+       //Function to return a list of nodes visible from the top view 
+    //from left to right in Binary Tree.
+    
+    // defining two global variables.
+  
+    
+    
+    // This function will give the leftMostpos and rightMostpos
+    public static void getSpan(Node root,int pos)
+    {
+        
+        if(root==null)
+            return;
+        
+        leftMostPos = Math.min(leftMostPos,pos);
+        rightMostPos = Math.max(rightMostPos,pos);
+        
+        // Whenever we are calling the left node we will pass position -1 to maintain the order
+        // same when we move right we add +1.
+        getSpan(root.left,pos-1);
+        getSpan(root.right,pos+1);
+    }
+    
+    
+   static class Pair{
+        Node node;
+        int vL;
+        
+        Pair(Node node,int vL)
+        {
+            this.node = node;
+            this.vL = vL;
+          
+        }
+    }
+    
+    static ArrayList<Integer> topView(Node root)
+    {
+    //   // we will do a mix of BFS and Vertical order traversal to solve this question.
+    //   // we need to return arraylist so we will first declare a arraylist
+       
+      ArrayList<Integer> topView = new ArrayList<>();
+       
+      if(root==null)
+            return topView;
+            
+            getSpan(root,0);
+            
+        // no. of Levels nikal lete hai
+        int noOfLvls =  (rightMostPos-(leftMostPos)) +1;
+       // System.out.println(noOfLvls);
+        // Ab origin shifting kar lenge taki leftmost ka vlevel 0 ho jaye and root ka vo ho jaye.
+        int rootPos = -(leftMostPos);
+       // System.out.println(rootPos);
+       
+      // Now we will declare a pair type queue jismein hm Lvl order traversal krenge
+       
+      Queue<Pair> que = new ArrayDeque<>();
+      // now we will add the root and position of root to the Queue.
+      que.add(new Pair(root,rootPos));
+       
+       ArrayList<Integer> vO = new ArrayList<>();
+      // We will also need a TreeMap which will contain only the topview persons
+      Map<Integer,Integer> map = new TreeMap<>();
+       
+      while(que.size()!=0)
+      {
+              Pair rpair = que.remove();
+              if(!map.containsKey(rpair.vL))
+              {
+                  map.put(rpair.vL,rpair.node.data);
+              }
+          
+              if(rpair.node.left!=null)
+              {
+                  que.add(new Pair(rpair.node.left,rpair.vL-1));
+              }
+               
+              if(rpair.node.right!=null)
+              {
+                  que.add(new Pair(rpair.node.right,rpair.vL+1));
+              }
+               
+          }
+      for(int key:map.keySet()){
+          // System.out.println("vL = "+key+" Value = "+map.get(key));
+         topView.add(map.get(key));
+      } 
+      return topView;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////2nd Way\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+class Solution
+{
+ static class Pair{
+        Node node;
+        int hd;
+        
+        Pair(Node node,int hd)
+        {
+            this.node = node;
+            this.hd = hd;
+          
+        }
+    }
+
+ static ArrayList<Integer> topView(Node root)
+  { 
+    ArrayList<Integer> topView = new ArrayList<>();
+    Queue<Pair> que = new LinkedList<>();
+    que.add(new Pair(root,0));
+    
+    int hd=0;
+    int l=0;
+    int r=0;
+    
+    Stack<Integer> left = new Stack<>();
+    ArrayList<Integer> right = new ArrayList<>();
+    
+    
+    Node node =null;
+    
+    while(!que.isEmpty())
+    {
+        node = que.peek().node;
+        hd = que.peek().hd;
+        
+        if(hd<l)
+        {
+            left.push(node.data);
+            l = hd;
+        }
+        if(hd>r)
+        {
+            right.add(node.data);
+            r = hd;
+        }
+        if(node.left!=null)
+        {
+            que.add(new Pair(node.left,hd-1));
+        }
+         if(node.right!=null)
+        {
+            que.add(new Pair(node.right,hd+1));
+        }
+        
+        que.poll();
+        
+    }
+    
+    while(!left.isEmpty())
+    {
+      // System.out.print(left.peek()+" ");
+        topView.add(left.peek());
+        left.pop();
+    }
+    
+  // System.out.print(root.data+" ");
+    topView.add(root.data);
+    
+    for(int i:right)
+    {
+      // System.out.print(i+" ");
+        topView.add(i);
+    }
+    return topView;
+  }
+}
+
