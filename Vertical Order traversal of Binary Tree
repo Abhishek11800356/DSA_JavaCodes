@@ -1,0 +1,174 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.io.*;
+import java.util.*;
+import java.lang.*;
+
+class TreeNode{
+    int data;
+    TreeNode left;
+    TreeNode right;
+    TreeNode(int data){
+        this.data = data;
+        left=null;
+        right=null;
+    }
+}
+
+class Solution {
+
+    // Two global variables to help finding the no. of Verticallevels 
+    int leftMostPos = 0;
+    int rightMostPos = 0;
+
+
+    public void getSpan(TreeNode root,int pos)
+    {
+        if(root==null)
+            return;
+
+        leftMostPos = Math.min(leftMostPos,pos);
+        rightMostPos = Math.max(rightMostPos,pos);
+                
+        getSpan(root.left,pos-1);
+        getSpan(root.right,pos+1);
+    }
+
+    class pair implements Comparable<pair>{
+        TreeNode node;
+        int vL;
+
+        pair(TreeNode node,int vL)
+        {
+            this.node=node;
+            this.vL = vL;
+        }
+
+        @Override
+        public int compareTo(pair o)
+        {
+           // if the vL is same but not sorted so return the pair with smaller value
+            if(this.vL==o.vL)
+            {
+                return this.node.data-o.node.data;
+            }   
+            else
+            {  // if vL is not same so return the smaller vL.
+                return this.vL-o.vL;
+                }
+        }
+    }
+    
+    List<List<Integer>> VerticalTraversal(TreeNode root) {
+        //Write your code here
+
+        List<List<Integer>> vOrder = new ArrayList<>();
+    
+        if(root==null)
+            return vOrder;
+
+        // Sabse pehle getSpan ko call krke leftmost and rightmost ko find kr lenge
+         getSpan(root,0);
+
+        // No of Vertical levels in the tree or so called horizontal distance 
+        int noOfLvls= (rightMostPos-leftMostPos)+1;
+        // Ab origin shifting kar lenge taaki levels -ve na ho.
+        int rootPos = -(leftMostPos);
+
+        for(int i=0;i<noOfLvls;i++)
+            {
+                vOrder.add(new ArrayList<>());
+            }
+
+        // Ab the old level order traversal karenge with the help of these level.
+        // Pair type Queue banalenge so that we can easily add values at the particular level.
+      // // Queue<pair> que = new ArrayDeque<>(); with normal Queue its not possible so we will use priority queue
+        // for the people who are at same vL the person with smaller value will be taken
+        // and if vl are diff then the person with smaller vL will be taken first from the queue.
+
+        // to implement this we need to put our own sorting method on the pair class
+         PriorityQueue<pair> que = new PriorityQueue<>();
+         que.add(new pair(root,rootPos));
+
+        while(!que.isEmpty())
+            {
+                int size = que.size();
+                // but this also has a issue that it will start comparing parent vL with child's so for the people on one level 
+                // we will have a seperate PQ and at the end we will add them to the main PQ
+                PriorityQueue currLvl = new PriorityQueue<>();
+                
+                while(size-->0)
+                    {
+                        pair rpair = que.remove();
+                        vOrder.get(rpair.vL).add(rpair.node.data);
+
+                        if(rpair.node.left!=null)
+                        {//vL-1 isliye kuki left side jayenge
+                            currLvl.add(new pair(rpair.node.left,rpair.vL-1));
+                        }
+
+                        if(rpair.node.right!=null)
+                        {//vL+1 isliye kuki right side jayenge
+                            currLvl.add(new pair(rpair.node.right,rpair.vL+1));
+                        }
+                        
+                    }
+                // adding the current level PQ to main PQ
+                
+                que = currLvl;
+            }
+        return vOrder;
+    }
+}
+
+class Main {
+
+    static TreeNode buildTree(String str) {
+        if(str.length()==0 || str.charAt(0)=='N')
+            return null;
+
+        String ip[] = str.split(" ");
+        TreeNode root = new TreeNode(Integer.parseInt(ip[0]));
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        int i = 1;
+        while(queue.size()>0 && i < ip.length) {
+            TreeNode currNode = queue.peek();
+            queue.remove();
+            String currVal = ip[i];
+            if(!currVal.equals("N")) {
+                currNode.left = new TreeNode(Integer.parseInt(currVal));
+                queue.add(currNode.left);
+            }
+            i++;
+            if(i >= ip.length)
+                break;
+            currVal = ip[i];
+            if(!currVal.equals("N")) {
+                currNode.right = new TreeNode(Integer.parseInt(currVal));
+                queue.add(currNode.right);
+            }
+            i++;
+        }
+        return root;
+    }
+
+    public static void main (String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int t=Integer.parseInt(br.readLine());
+        while(t > 0){
+            String s = br.readLine();
+            TreeNode root = buildTree(s);
+            Solution ob = new Solution();
+            List<List<Integer>> ans = ob.VerticalTraversal(root);
+            for(int i = 0; i < ans.size(); i++) {
+                for(int a : ans.get(i)) {
+                    System.out.print(a + " ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+            t--;
+        }
+    }
+}
