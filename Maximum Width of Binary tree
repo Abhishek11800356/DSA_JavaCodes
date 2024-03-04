@@ -1,0 +1,126 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.io.*;
+import java.util.*;
+
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+
+class Main {
+    static Node buildTree(String str) {
+        if (str.length() == 0 || str.charAt(0) == 'N') {
+            return null;
+        }
+        String ip[] = str.split(" ");
+        Node root = new Node(Integer.parseInt(ip[0]));
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        int i = 1;
+        while (queue.size() > 0 && i < ip.length) {
+            Node currNode = queue.peek();
+            queue.remove();
+            String currVal = ip[i];
+            if (!currVal.equals("N")) {
+                currNode.left = new Node(Integer.parseInt(currVal));
+                queue.add(currNode.left);
+            }
+            i++;
+            if (i >= ip.length)
+                break;
+            currVal = ip[i];
+            if (!currVal.equals("N")) {
+                currNode.right = new Node(Integer.parseInt(currVal));
+                queue.add(currNode.right);
+            }
+            i++;
+        }
+        return root;
+    }
+
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        sc.nextLine();
+        String s = sc.nextLine();
+        Node root = buildTree(s);
+        Solution tree = new Solution();
+        int ans = tree.solve(root);
+        System.out.println(ans);
+
+        sc.close();
+    }
+}
+
+class Solution {
+
+    // Approach is We will perform a LVL Order Trvrsl and we will be having a pair which will have node data and index of each node
+    // If we have 0 base indexing then for left child index formula is  - 2*i+1 and right child -2*i+2;
+    // But this will give a overflow if the height goes 2^30 and above so 
+    //we wil index it as for each level we will subtract it with the minimum index at that level and then we will take it as i. 
+
+    class pair{
+        Node node;
+        int indx;
+        pair(Node node,int indx)
+        {
+            this.node = node;
+            this.indx = indx;
+        }
+    }
+    
+    
+    
+    public int solve(Node root) {
+        // your code here
+        if(root==null)
+            return 0;
+
+        int max =0;
+        // LVL Order Trvrsl
+        Queue<pair> que = new ArrayDeque<>();
+        que.add(new pair(root,0));
+
+        while(que.size()!=0)
+            {
+                int size =que.size();
+                int x =size;
+                // Now we will find the min. here itself because at this point the front one will be 
+                // node with min. index
+                int min = que.peek().indx;
+                int i=0;
+                int left=0,right=0;
+                while(x-->0)
+                    {
+                        // this will find the curr_level id by subtracting it with the min. on that lvl 
+                        int curr_id = que.peek().indx-min;
+                        pair rpair = que.remove();
+                        if(i==0)
+                            left = curr_id;
+                        if(i==size-1)
+                            right = curr_id;
+
+                        if(rpair.node.left!=null)
+                        {
+                            que.add(new pair(rpair.node.left,2*curr_id+1));
+                        }
+                         if(rpair.node.right!=null)
+                        {
+                            que.add(new pair(rpair.node.right,2*curr_id+2));
+                        }
+                        i++;
+                        
+                    }
+                max = Math.max((right-left+1),max);
+            }
+        return max;
+    }
+}
