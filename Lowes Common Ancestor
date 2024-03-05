@@ -119,7 +119,7 @@ class Solution {
         if(node.data==n1 || node.data == n2)
             return node;
  
-        Node filc = findLCA(node.left,n1.n2);
+        Node filc = findLCA(node.left,n1,n2);
         Node firc = findLCA(node.right,n1,n2);
 
         if(filc==null)
