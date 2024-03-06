@@ -1,0 +1,45 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public TreeNode construct(int[] preOrder, int psi,int pei,int[] inOrder,int isi,int iei)
+    {
+        if(psi>pei||isi>iei)
+        {
+            return null;
+        }
+        // Approach - ek node create kro aur initialize wit preorder[psi] fir ek ptr lo jo inorder mein preorder[psi]
+        // ko find kre and fir usi ke hisaab se left and right call kro
+        // Create a root and give it value of the first element of preorder
+        TreeNode root = new TreeNode(preOrder[psi]);
+        int cnt =0;
+        int ptr =isi;
+        while(inOrder[ptr]!=root.val)
+        {
+            ptr++;
+            cnt++;
+        }
+
+        TreeNode lst = construct(preOrder,psi+1,psi+cnt,inOrder,isi,ptr-1);
+        TreeNode rst = construct(preOrder,psi+cnt+1,pei,inOrder,ptr+1,iei);
+         root.left =lst;
+         root.right =rst;
+        
+        return root;
+    }
+    public TreeNode buildTree(int[] preorder, int[] inorder) {       
+     return construct(preorder,0,preorder.length-1,inorder,0,inorder.length-1);
+    }
+}
