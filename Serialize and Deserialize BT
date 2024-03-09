@@ -1,0 +1,74 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Codec {
+
+    // Encodes a tree to a single string.
+    // Approach to serialize an BT is -> ek StringBuilder lenge and usmein append krenge in PREORDER fashion;
+    // i.e. pehle left root and add your self to string fir left and fir right.
+
+    public void SerializeBtPreorder(TreeNode root,StringBuilder serial)
+    {
+            if(root==null)
+           {    // First add null then return
+                serial.append("null,");
+               return;
+           }
+            // Add yourself
+            serial.append(root.val);
+            serial.append(",");
+
+            // left call and right call
+            SerializeBtPreorder(root.left,serial);
+            SerializeBtPreorder(root.right,serial);
+    }
+    public String serialize(TreeNode root) {
+        StringBuilder serial =new StringBuilder();
+        SerializeBtPreorder(root,serial);
+        // As we have used StringBuilder we need to convert back to string in order to return
+        return serial.toString();
+
+    }
+
+    // Decodes your encoded data to tree.
+    // Approach->pehle string ko Array mein convert karlenge and fir BT construct kr lenge.
+    // preorder fashion mein karenge to pehle root create krenge and fir left and right create krenge.
+    // we need to make a global variable to keep a track of the index;
+     int indx =0;
+    public TreeNode construct(String[] deserialBT)
+    {
+        
+        if(indx >= deserialBT.length)
+        {
+            indx++;
+            return null;
+        } 
+        if(deserialBT[indx].equals("null"))
+        {
+            indx++;
+            return null;
+        }
+
+        TreeNode root = new TreeNode(Integer.parseInt(deserialBT[indx]));
+        indx++;
+         root.left = construct(deserialBT);
+         root.right = construct(deserialBT);
+
+        return root;
+    }
+    public TreeNode deserialize(String data) {
+        String deserialBT[] = data.split(",");
+        return construct(deserialBT);
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser = new Codec();
+// Codec deser = new Codec();
+// TreeNode ans = deser.deserialize(ser.serialize(root));
