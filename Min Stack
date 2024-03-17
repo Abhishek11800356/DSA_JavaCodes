@@ -1,0 +1,252 @@
+          //TC->O(N),SC->O(N)
+        // Approach 1-> ek temporary stack lenge aur min find krenge usmein sab ko transfer krte time  and fir wapas transfer kr denge orignal stack mein.
+      // But this method gives TLE
+// class MinStack {
+    // Stack<Integer> orgnl ;
+    //     public MinStack() {
+    //         orgnl = new Stack<>();
+            
+    //     }
+        
+    //     public void push(int val) {
+    //         orgnl.push(val);
+    //     }
+        
+    //     public void pop() {
+    //         orgnl.pop();
+    //     }
+        
+    //     public int top() {
+    //         return orgnl.peek();
+    //     }
+        
+    //     // public int getMin() {
+    //            
+    //     //     Stack<Integer> temp = new Stack<>();
+    //     //     int min =Integer.MAX_VALUE;
+    //     //     while(orgnl.size()>0)
+    //     //     {
+    //     //         min = Math.min(orgnl.peek(),min);
+    //     //         temp.push(orgnl.pop());
+    //     //     }
+    //     //      while(temp.size()>0)
+    //     //     {
+    //     //         orgnl.push(temp.pop());
+    //     //     }
+    //     //    return min;
+    //     // }
+
+// }
+
+
+
+
+  // TC->O(1),SC-->O(1)
+// Approach 2-> 
+// Instead of Creating two Stack Hm Pai class banayenge value and minelement ka aur pair insert krenge Stack mein.
+// class MinStack {
+
+//     class pair
+//     {
+//         int value;
+//         int minElement;
+
+//         pair(int value,int minElement)
+//         {
+//             this.value = value;
+//             this.minElement = minElement;
+//         }
+//     }
+
+//  Stack<pair> st ;
+//     public MinStack() {
+//         st = new Stack<>();
+        
+//     }
+    
+//     public void push(int val) {
+//        // Agar stack empty hai to val hi min Element hoga
+//         if(st.size()==0)
+//         {
+//             st.push(new pair(val,val));
+//         }
+//         else
+//         { // Jb push krenge tb hi minimum find kr lena hai;
+//           int minEle = st.peek().minElement;
+//           st.push(new pair(val,Math.min(val,minEle)));
+//         }
+//     }
+    
+//     public void pop() {
+//         st.pop();
+//     }
+    
+//     public int top() {
+//         return st.peek().value;
+//     }
+
+//     public int getMin() 
+//     {   
+//        return st.peek().minElement;
+//     }
+// }
+
+
+
+
+
+ // TC->O(1),SC-->O(1)
+ // Approach 3-> 
+// Here we will use help of backtracking jaha agar koi naya value aata hai jo min se chota hai to  stack mein val-min push krte hai
+// and nikalte time back to orignal value convert kr dete hai;
+
+//      class MinStack {
+//     Stack<Long> st ;
+//     long minEle;
+//     public MinStack() {
+//         st = new Stack<>();
+//         minEle = -1;
+//     }
+    
+//     public void push(int val) {
+//         long x = (long)val;
+//       if(st.size()==0)
+//       {
+//         st.push(x);
+//         minEle =x;
+//       }else if(x>=minEle)
+//       {
+//         st.push(x);
+//       }
+//       else if(x<minEle)
+//       {
+//         st.push(2*x-minEle);
+//         minEle = x;
+//       }
+        
+//     }
+    
+//     public void pop() {
+//             if(st.size()==0)
+//             {
+//                 return;
+//             }
+//             else if(st.peek()>=minEle)
+//             {
+//                 st.pop();
+//             }
+//             else if(st.peek()<minEle)
+//                 {
+//                     minEle = 2*minEle - st.peek();
+//                     st.pop();
+//                 }    
+//     }
+    
+//     public int top() {
+//         if(st.size()==0)
+//         {
+//             return -1;
+//         }
+//         long q = st.peek();
+//        if(q>=minEle)
+//        {
+//         return (int)q;
+//        }
+//        if(q<minEle)
+//        {
+//         return (int)minEle;
+//        }
+//        return 0;
+//     }
+
+//     public int getMin() 
+//     {   
+//         if(st.size()==0)
+//         {
+//             return -1;
+//         }
+//             return (int)minEle;
+//     }
+// }
+
+
+
+
+//Approach -> 4
+// Jab bhi push karna hai and if(val<min) to hum do chiz push krenge pehle min and fir val. else val;
+// Reason hai ki jab bhi hm pop kre to easily prevous min tak pahunch jaye
+// While popping check krenge st.peek()==min then do pop krenge pehla pop usko remove krne and second pop min value ko update krne ke liye.
+
+ class MinStack {
+    Stack<Integer> st ;
+    int minEle;
+    public MinStack() {
+        st = new Stack<>();
+        minEle = Integer.MAX_VALUE;
+    }
+    
+    public void push(int val) {
+      if(st.size()==0)
+      {
+        st.push(minEle); // frst push minele
+        st.push(val);  // Second value
+        minEle =val;
+      }
+      else if(val>minEle)
+      {
+        st.push(val);
+      }
+      else if(val<=minEle)
+      {
+       st.push(minEle);
+       st.push(val);
+       minEle = val;
+      }   
+    }
+    
+    public void pop() {
+            if(st.size()==0)
+            {
+                return;
+            }
+            else if(st.peek()==minEle)
+            {
+                st.pop();
+                minEle = st.pop();
+            } 
+            else
+            {
+                st.pop();
+            }
+
+    }
+    
+    public int top() {
+        if(st.size()==0)
+        {
+            return -1;
+        }
+       else
+       {
+         return st.peek();
+       }
+    }
+
+    public int getMin() 
+    {   
+        if(st.size()==0)
+        {
+            return -1;
+        }
+            return (int)minEle;
+    }
+}
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack obj = new MinStack();
+ * obj.push(val);
+ * obj.pop();
+ * int param_3 = obj.top();
+ * int param_4 = obj.getMin();
+ */
