@@ -1,0 +1,112 @@
+class Solution {
+            //TC->O(N^2),SC->O(1)
+    // public int trap(int[] height) { 
+    //     // Brute force method 
+    //     // har element pe jayenge --> vaha se leftmax(<---) and rightmax(--->) nikalenge 
+    //     // ab dono ka minimum jo hoga vahi tak pani hold ho payega kuki bade vale side tak pani bharega to chote vale side se gir jayega
+    //     // ab water traped nikalne ke liye (height of building - Min(lmax,Rmax))*width.
+    //     int n=height.length;
+    //     int trapWater =0;
+    //     for(int i=0;i<n;i++)
+    //     {
+    //         int lB=Integer.MIN_VALUE;
+    //         int rB=Integer.MIN_VALUE;
+    //         // find left boundary
+    //         for(int j=i;j>=0;j--)
+    //         {
+    //                 lB=Math.max(lB,height[j]);
+    //         }
+    //         // find right boundary
+    //         for(int j=i;j<n;j++)
+    //         {
+    //                 rB=Math.max(rB,height[j]);
+    //         }
+    //         int limitingHeight = Math.min(lB,rB);
+    //         if(height[i]<limitingHeight)
+    //         trapWater += ( limitingHeight- height[i])*1;
+    //     }
+    //     return trapWater;
+    // }
+
+    //  public int trap(int[] height) {
+    //     // Time OPTIMIZED 
+    //     // TC->O(N),SC->O(N) 
+    //     // Har baar sirf ek element ke chalte pure end tak jana padta tha LMAX and RMAX dhundne  
+    //     //to uska solution ye hai ki har index ke liye hm LMAX aur rightmax store kr lenge ek array mein to sirf previous element ka 
+    //     //Lmax ko current se compare kr denge to bhi mil jayega. 
+    //     int n =height.length;
+    //     int lMax[] = new int[n];
+    //     int rMax[] = new int[n];
+    //     lMax[0] = Integer.MIN_VALUE; 
+    //     for(int i=1;i<n;i++)
+    //     {
+    //         lMax[i]= Math.max(lMax[i-1],height[i-1]);// lmax[i] aur array ke height mein jo bhi bara hga vo left boundary mein store hoga.
+    //     }
+    //     rMax[n-1] =Integer.MIN_VALUE; 
+    //     for(int i=n-2;i>=0;i--)
+    //     {
+    //         rMax[i] = Math.max(rMax[i+1],height[i+1]);// rmax[i] aur array ke height mein jo bhi bara hga vo right boundary mein store hoga.
+    //     }
+    //     int trpWtr =0;
+    //     for(int i=0;i<n;i++)
+    //     {
+    //         int limitHeight = Math.min(lMax[i],rMax[i]);
+    //         if(limitHeight>height[i])
+    //         {
+    //             trpWtr += (limitHeight-height[i])*1;
+    //         }
+            
+    //     }
+    //     return trpWtr;
+
+    // }
+
+
+    public int trap(int[] height) {
+        // Time OPTIMIZED and Space optimized 
+        // TC->O(N),SC->O(1) 
+        // Yaha hm 4 pointers use krenge (2 left Boundary ke liye and 2 right boundary ke liye)
+        // Apprach ye hai ki initaially lb = -infinity and rb = -infinity kuki dono corners ke peeche kuch bhi water store ni ho sakta
+        // ab ek leftptr(l) aur rightptr(r)ko arr[1] and arr[n-2] pe rakh lenge and compare krenge ki agar lB<=Rb i.e lbLimiting Height hai
+        // fir agar arr[l]<LB i.e water store kiya ja sakta hai and agar ni hai to lB = arr[l] kuki arr[l] bada hai lB se to update LB. 
+        // Similarly for RB also; 
+        int n =height.length;
+
+        int lb =height[0];// lb ko extreme left de diye
+        int rb = height[n-1]; // rb ko extreme right de diye
+
+        int l = 1; // pointers
+        int r =n-2; //pointers
+        int trpWtr=0;
+        while(l<=r)
+        {
+            if(lb<=rb)
+            {
+                if(lb>height[l])
+                {
+                    trpWtr += (lb-height[l])*1;
+                }
+                else
+                {
+                    lb = height[l]; //lb updated 
+                }
+                l++;
+            }
+            else
+            {
+                if(rb>height[r])
+                {
+                    trpWtr += (rb-height[r])*1;
+                }
+                else
+                {
+                    rb = height[r]; //rb updated 
+                }
+                r--;
+            }
+        }
+
+        return trpWtr;
+
+    }
+}
