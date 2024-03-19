@@ -1,0 +1,87 @@
+import java.util.*;
+
+// class Solution{
+//     static int[] SlidingWindowMaximum(int N, int K, int[] arr){
+//         // write code here
+
+// 		int Max[] = new int[N-K+1];
+// 		int ngri[] = new int[N];
+// 		Arrays.fill(ngri,N);
+// 		Stack<Integer> st = new Stack<>();
+// 		for(int i=0;i<N;i++)
+// 			{
+// 				while(st.size()>0 && arr[i]>arr[st.peek()])
+// 					{
+// 						ngri[st.pop()] = i; 
+// 					}
+// 				st.push(i);
+// 			}
+//          int j=0;
+// 		for(int i=0;i<=N-K;i++)
+// 			{
+// 				if(j<i)
+// 					j=i;
+
+// 				while(ngri[j]<i+K)
+// 					j=ngri[j];
+
+// 				Max[i] = arr[j];
+// 			}
+// 	return Max;	
+//     }
+// }
+
+class Solution{
+    static int[] SlidingWindowMaximum(int N, int K, int[] arr){
+        // write code here
+
+         // No of windows that will form is (N-K+1)
+        int window[] = new int[N-K+1];
+        Deque<Integer> dq = new ArrayDeque<>(); // Yaha hm Stack ka implementation kr re hai deque se
+       int wind_No=0;
+        for(int i=0;i<N;i++)
+            {
+                int ele = arr[i];
+                while(dq.size()>0 && ele>arr[dq.getLast()])
+                    {
+                        dq.removeLast();// remove the element 
+                    }
+                dq.addLast(i);
+
+                // Yha check krenge ki stack mein jo bottom mei hai vo is window se bahar ka to nai if hai to remove krdenge
+                int si = i-K+1; // suppose ending index hai i -> 4 to si -> 4-3+1 =2
+                if(dq.size()>0 && dq.getFirst()<si)
+                {
+                    dq.removeFirst();
+                }
+
+           //ye bs winkow number change krne ke liye taki answer save ho sahi jgha pe
+           // .i jabtak k ke barabar nai aayega matlb first window hi rhega(k-1) isliye kuki 0 based indexing hai
+                if(i>=K-1) 
+                {
+                    window[wind_No] = arr[dq.getFirst()];
+                    wind_No++;
+                }
+            }
+        return window;
+
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws Throwable {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int k = sc.nextInt();
+        int nums[]=new int[n];
+        for(int i = 0; i < n; i++)
+        {
+            nums[i] = sc.nextInt();
+        }
+        Solution obj = new Solution();
+        int[] ans=obj.SlidingWindowMaximum(n,k,nums);
+        for(int i=0;i<ans.length;++i){
+            System.out.print(ans[i] + " ");
+        }
+    }
+}
