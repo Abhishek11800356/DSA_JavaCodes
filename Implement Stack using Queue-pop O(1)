@@ -1,0 +1,61 @@
+import java.io.*;
+import java.util.*;
+
+class Stack
+{
+    Queue<Integer> st;
+    Queue<Integer> tmpst;
+    Stack()
+    {
+        this.st  = new ArrayDeque<>();
+        this.tmpst = new ArrayDeque<>();
+    }
+
+    void push(int a)
+    {
+        // Jab bhi push krenge tb hi ulta kr ke push krenge
+        // pehle st ko khali krenge and tmpst mein add krenge and fir st mein current value add krenge 
+        //nd then push back from tmpst to st.
+
+        while(st.size()>0)
+        {
+            tmpst.add(st.remove());
+        }
+        st.add(a);
+
+        while(tmpst.size()>0)
+            {
+                st.add(tmpst.remove());
+            }
+    }
+    int pop()
+    {
+        if(st.size()==0)
+         { 
+             return -1; // Empty Queue
+         }
+        else
+            return st.remove();
+    }	
+}
+public class Main {
+    public static void main(String args[]) throws IOException {
+        Scanner sc = new Scanner(System.in);    
+        Stack g = new Stack();			
+        int q = sc.nextInt();
+        while(q>0)
+        {
+            int QueryType = sc.nextInt();
+            if(QueryType == 1){
+                int a = sc.nextInt();
+                    // call push function here
+				g.push(a);
+            }
+            else if(QueryType == 2){
+                    // call pop function here
+				System.out.print(g.pop()+" ");
+            }
+            q--;
+        }	
+    }
+}
