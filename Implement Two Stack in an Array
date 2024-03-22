@@ -10,8 +10,8 @@ class twoStacks {
 	{
 		this.size = n;
 		this.arr = new int[n];
-		top1 = -1;
-		top2 = size;
+		top1 = 0;
+		top2 = size-1;
 	}
 
 	// Method to push an element x to stack1
@@ -20,8 +20,8 @@ class twoStacks {
          // Your code here
         if(top1+1<top2)
         {
+            arr[top1]=x;
             top1++;
-            arr[top1]=x;  
         }
         else
         {
@@ -36,8 +36,8 @@ class twoStacks {
 	{
          if(top2-1>top1)
         {
-            top2--;
             arr[top2]=x;
+            top2--;
         }
         else
         {
@@ -50,11 +50,12 @@ class twoStacks {
 	void pop1()
 	{
 		// Your code here
-        if(top1!=-1)
+        if(top1!=0)
         {
+            top1--;
            System.out.println(arr[top1]);  
             arr[top1]=0;
-            top1--;
+            
         }
         else
         {
@@ -67,11 +68,12 @@ class twoStacks {
 	// from second stack
 	void pop2()
 	{
-		 if(top2!=size)
+		 if(top2!=size-1)
         {
+            top2++;
             System.out.println(arr[top2]);  
             arr[top2]=0;
-            top2++;
+            
         }
         else
         {
