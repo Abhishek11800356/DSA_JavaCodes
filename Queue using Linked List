@@ -1,0 +1,99 @@
+import java.util.*;
+
+class Queue {
+
+    class Node
+        {
+        Node next;
+        int data;
+        public Node(int data)
+        {
+          this.data = data;
+          this.next = null;
+         } 
+    }
+
+    Node head; // pointer to head
+    Node tail; // pointer to tail
+    int size;
+    
+    Queue()
+    {
+        this.head = null;
+        this.tail = null;
+        this.size  = 0;
+    }
+    
+    
+    public void push(int value) {
+        // For pushing pehle newNode create krenge and fir data push kr denge
+        Node newNode = new Node(value);
+       if(size==0)
+       {  
+          head = newNode;
+          tail = newNode;
+       }
+        else // Add the newNode at last
+       { 
+           tail.next = newNode;
+           tail = newNode; // Tail ko next pe le gye(i.e. newNode pe)
+       }
+        size++;
+    }
+    public int pop() {
+
+        if(size==0)
+        {
+          return -1;
+        }
+         else if(size==1) //if only single node present
+         {
+             int removedElement = head.data;
+             head = null;
+             tail = null;
+             size--;
+             return removedElement;
+         }
+        else
+         {// Though it ia a queue so removal at front
+           int removedElement = head.data; 
+           Node temp = head.next;
+             head.next = null; // Breaking the link
+             head = temp;
+             size--;
+             return removedElement;
+         }
+    }
+    public int front() {
+        if(head==null)
+        {
+            return -1;
+        }
+        return head.data;
+    }
+    public int getSize() {
+        return size;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Queue q = new Queue();
+        int n = sc.nextInt();
+        for(int i = 0; i < n; i++) {
+            int op = sc.nextInt();
+            if(op == 1) {
+                int x = sc.nextInt();
+                q.push(x);
+            }
+            else if(op == 2) {
+                System.out.println(q.pop());
+            }
+            else if(op == 3)
+                System.out.println(q.front());
+            else if(op == 4)
+                System.out.println(q.getSize());
+        }
+    }
+}
