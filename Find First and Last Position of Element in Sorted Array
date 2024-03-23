@@ -1,0 +1,65 @@
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int frst = firstPosition(nums,target);
+        int last = lastPosition(nums,target);
+        int ans[] = new int[2];
+        ans[0] = frst;
+        ans[1] = last;
+        return ans;
+    }
+    public int firstPosition(int[] nums,int target)
+    {
+        // Define the range of search
+        int si = 0;
+        int ei = nums.length-1;
+        int firstPos =-1;
+        // As we have to find the first position so we will move always towards left first and store the mid as the potential ans; 
+        while(si<=ei)
+        {
+            
+            int mid = (si+ei)/2;
+            if(nums[mid]==target)
+            {
+                firstPos = mid;
+                // move towards the left to find minimum first pos
+                ei =mid-1;
+            }
+            else if(nums[mid]>target)
+            {
+                    ei =mid-1;
+            }
+            else
+            {
+                si = mid+1;
+            }
+        }
+        return firstPos;
+    }
+    public int lastPosition(int[] nums,int target)
+    {
+        // Define the range of search
+        int si = 0;
+        int ei = nums.length-1;
+        int lastPos = -1;
+        // As we have to find the last position so we will move always towards right first and store the mid as the potential ans;
+        while(si<=ei)
+        {
+            int mid = (si+ei)/2;
+            if(nums[mid]==target)
+            {
+                lastPos = mid;
+                // move towards the right to find maximum last pos
+                si =mid+1;
+            }
+            else if(nums[mid]<target)
+            {
+                    si =mid+1;
+            }
+            else
+            {
+                ei = mid-1;
+            }
+        }
+        return lastPos;
+    }
+}
