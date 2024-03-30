@@ -1,0 +1,61 @@
+import java.io.*;
+import java.util.*;
+
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n,m;
+        n = sc.nextInt();
+        m = sc.nextInt();
+        int[][] arr = new int[n][m];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                arr[i][j] = sc.nextInt();
+            }
+        }
+        Solution s = new Solution();
+        System.out.println(s.rowWithMaximumOnes(arr,n,m));
+        
+    }
+}
+
+class Solution {
+    // Function to find the index of the row with maximum number of ones
+    static int rowWithMaximumOnes(int arr[][], int n, int m) {
+        int count = 0; // Counter variable to count number of ones in a row
+        int maxCount = -1; // Variable to store the maximum count of ones found so far
+        int maxCntIndx = -1; // Variable to store the index of the row with maximum ones
+        int potAns = m; // Variable to store the potential answer
+        
+        // Loop through each row of the grid
+        for(int i = 0; i < n; i++) {
+            int si = 0; // Start index for binary search
+            int ei = m - 1; // End index for binary search
+            
+            // Perform binary search to find the leftmost occurrence of 1 in the current row
+            while(si <= ei) {
+                int mid = (si + ei) / 2; // Calculate mid index
+                
+                if(arr[i][mid] >= 1) { // If the element at mid is 1 or greater
+                    potAns = mid; // Update potential answer to mid
+                    ei = mid - 1; // Move end index to the left of mid
+                } else {
+                    si = mid + 1; // Move start index to the right of mid
+                }
+            }
+            
+            // Calculate the count of ones in the current row
+            count = m - potAns;
+            
+            // Update maxCount and maxCntIndx if the count of ones in the current row is greater
+            if(maxCount < count) {
+                maxCount = count;
+                maxCntIndx = i;
+            }
+        }
+        
+        // Return the index of the row with maximum number of ones
+        return maxCntIndx;
+    }
+}
