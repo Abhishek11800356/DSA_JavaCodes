@@ -1,0 +1,84 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Solution {
+    
+    // Function to check if it is possible to allocate books such that
+    // no student gets more than 'max' pages
+    public boolean isPossible(int[] A, int B, long max) {
+        int studentNo = 1; // Number of students
+        int noOfPages = 0; // Pages allocated to current student
+        int n = A.length; // Number of books
+        
+        // Iterate through the books
+        for(int i = 0; i < n; i++) {
+            // If adding pages of current book doesn't exceed 'max'
+            if(noOfPages + A[i] <= max) {
+                noOfPages += A[i]; // Allocate pages to current student
+            } else {
+                studentNo++; // Move to the next student
+                noOfPages = A[i]; // Allocate pages to the next student
+            }
+        }
+        
+        // If the number of students exceeds the given limit 'B'
+        if(studentNo > B) {
+            return false; // Allocation not possible
+        }
+        return true; // Allocation possible
+    }
+
+    // Function to find the minimum number of pages allocated to a student
+    public long MinimumPages(int[] A, int B) {
+        int n = A.length; // Number of books
+        
+        // If number of books is less than the number of students
+        if(A.length < B) { 
+            return -1L; // Return -1 as allocation is not possible
+        }   
+        
+        long si = 0; // Start index for binary search
+        long ei = n; // End index for binary search
+        long pAns = -1; // Potential answer
+        
+        // Determine the range for binary search
+        for(int i = 0; i < n; i++) {
+            si = Math.max(si, A[i]); // Maximum in the array
+            ei += A[i]; // Sum of all pages in the array
+        }
+        
+        // Perform binary search to find the minimum pages allocated to a student
+        while(si <= ei) {
+            long mid = (si + ei) / 2; // Calculate mid
+            
+            // If it is possible to allocate books such that
+            // no student gets more than 'mid' pages
+            if(isPossible(A, B, mid)) {
+                pAns = mid; // Update potential answer
+                ei = mid - 1; // Adjust end index
+            } else {
+                si = mid + 1; // Adjust start index
+            }   
+        }
+        return pAns; // Return the minimum pages allocated to a student
+    }
+}
+
+
+class Main {
+    
+
+    public static void main (String[] args) {
+        Scanner sc = new Scanner(System.in);
+	    
+	    int N = sc.nextInt();
+	    int B = sc.nextInt();
+        int[] A = new int[N];
+        for(int i=0;i<N;i++)
+            A[i] = sc.nextInt();
+
+        Solution Obj = new Solution(); 
+        System.out.println(Obj.MinimumPages(A,B));
+	}
+}
